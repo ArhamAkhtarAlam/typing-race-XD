@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: typing-race-xd
+    runtime: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && node index.js
