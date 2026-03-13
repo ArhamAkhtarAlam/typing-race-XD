@@ -52,18 +52,19 @@ export default function App() {
 
     socket.on("room_update", (data) => {
       setRoomData(data);
-      if (data.status === "racing" && screen !== "race") {
-        setTyped("");
-        setScreen("race");
-        setTimeout(() => inputRef.current?.focus(), 100);
-      }
-      if (data.status === "finished") {
-        setScreen("results");
-      }
-      if (data.status === "waiting" && screen === "results") {
-        setTyped("");
-        setScreen("lobby");
-      }
+      setScreen(prev => {
+        if (data.status === "racing" && prev !== "race") {
+          setTyped("");
+          setTimeout(() => inputRef.current?.focus(), 100);
+          return "race";
+        }
+        if (data.status === "finished") return "results";
+        if (data.status === "waiting" && prev === "results") {
+          setTyped("");
+          return "lobby";
+        }
+        return prev;
+      });
     });
 
     socket.on("error", ({ message }) => {
